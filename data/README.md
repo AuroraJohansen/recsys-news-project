@@ -7,5 +7,9 @@ https://recsys.eb.dk
 
 Place files like this:
 
-data/raw/ebnerd/behaviors.tsv
-data/raw/ebnerd/news.tsv
+data/
+└── raw/
+    └── ebnerd_large/
+        ├── articles.parquet
+        ├── train/
+        └── validation/
