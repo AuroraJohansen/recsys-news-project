@@ -7,6 +7,7 @@ https://recsys.eb.dk
 
 Place files like this:
 
+```bash
 data/
 └── raw/
     └── ebnerd_large/
