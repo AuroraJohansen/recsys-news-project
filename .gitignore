@@ -205,3 +205,28 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Project data
+data/*
+!data/README.md
+
+# Large data formats
+*.csv
+*.tsv
+*.parquet
+*.feather
+*.hdf5
+*.json
+
+# Model artifacts
+models/
+checkpoints/
+*.pt
+*.pth
+*.pkl
+
+# Experiment outputs
+logs/
+results/
+wandb/
+mlruns/
