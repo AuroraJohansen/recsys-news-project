@@ -219,7 +219,6 @@ data/*
 *.json
 
 # Model artifacts
-models/
 checkpoints/
 *.pt
 *.pth
@@ -227,6 +226,5 @@ checkpoints/
 
 # Experiment outputs
 logs/
-results/
 wandb/
 mlruns/
