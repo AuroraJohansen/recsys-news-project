@@ -219,11 +219,11 @@ data/*
 *.json
 
 # Model artifacts
-models/
-checkpoints/
-*.pt
-*.pth
-*.pkl
+#models/
+#checkpoints/
+#*.pt
+#*.pth
+#*.pkl 
 
 # Experiment outputs
 logs/
