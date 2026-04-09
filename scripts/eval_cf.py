@@ -31,7 +31,7 @@ def main():
 
     # CF model
     cf = ItemBasedCFRecommender(user_history).fit()
-    results["item_cf"] = evaluate_on_behaviors(cf, val_beh, k=3, max_rows=10000)
+    results["item_cf"] = evaluate_on_behaviors(cf, val_beh, max_rows=10000)
 
     print(results)
 

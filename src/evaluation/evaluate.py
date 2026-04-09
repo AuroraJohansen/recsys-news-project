@@ -1,9 +1,9 @@
 from .metrics import precision_at_k, recall_at_k
 
 
-def evaluate_on_behaviors(model, behaviors_df, k=3, max_rows=None):
-    precisions = []
-    recalls = []
+def evaluate_on_behaviors(model, behaviors_df, ks=(1, 3, 5, 10), max_rows=None):
+    precision_scores = {k: [] for k in ks}
+    recall_scores = {k: [] for k in ks}
 
     it = behaviors_df.itertuples(index=False)
     if max_rows is not None:
@@ -15,13 +15,17 @@ def evaluate_on_behaviors(model, behaviors_df, k=3, max_rows=None):
         clicked = getattr(row, "article_ids_clicked")
         relevant = set(clicked) if clicked is not None else set()
 
-        ranked = model.rank(candidates)
+        ranked = model.rank(candidates, context=row)
 
-        precisions.append(precision_at_k(ranked, relevant, k))
-        recalls.append(recall_at_k(ranked, relevant, k))
+        for k in ks:
+            precision_scores[k].append(precision_at_k(ranked, relevant, k))
+            recall_scores[k].append(recall_at_k(ranked, relevant, k))
 
-    return {
-        f"precision@{k}": sum(precisions) / len(precisions),
-        f"recall@{k}": sum(recalls) / len(recalls),
-        "n_events": len(precisions),
-    }
+    results = {"n_events": len(next(iter(precision_scores.values())))}
+
+    for k in ks:
+        results[f"precision@{k}"] = sum(precision_scores[k]) / \
+            len(precision_scores[k])
+        results[f"recall@{k}"] = sum(recall_scores[k]) / len(recall_scores[k])
+
+    return results

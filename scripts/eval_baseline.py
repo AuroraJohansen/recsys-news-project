@@ -21,11 +21,11 @@ def main():
 
     # Random
     rnd = RandomRecommender().fit(train_beh)
-    results["random"] = evaluate_on_behaviors(rnd, val_beh, k=3)
+    results["random"] = evaluate_on_behaviors(rnd, val_beh)
 
     # Most popular
     pop = MostPopularRecommender().fit(train_beh)
-    results["most_popular"] = evaluate_on_behaviors(pop, val_beh, k=3)
+    results["most_popular"] = evaluate_on_behaviors(pop, val_beh)
 
     # Most recent
     articles = load_articles(DATA_ROOT)
@@ -33,7 +33,7 @@ def main():
     article_time = dict(zip(articles["article_id"], articles[time_col]))
 
     rec = MostRecentRecommender(article_time).fit()
-    results["most_recent"] = evaluate_on_behaviors(rec, val_beh, k=3)
+    results["most_recent"] = evaluate_on_behaviors(rec, val_beh)
 
     print(results)
     (OUT_DIR / "baselines.json").write_text(json.dumps(results, indent=2), encoding="utf-8")
