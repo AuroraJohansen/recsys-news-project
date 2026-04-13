@@ -5,7 +5,7 @@ sys.path.append(str(Path(__file__).resolve().parents[1]))
 
 import json
 from src.data.load_data import load_articles, load_history, load_behaviors
-from src.models.content_based import (
+from models.content_based_tf_idf_1 import (
     build_article_text,
     fit_vectorizer,
     build_article_id_to_index,
