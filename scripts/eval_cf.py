@@ -27,19 +27,23 @@ def main():
         history["article_id_fixed"]
     ))
 
-    results = {}
+    model = ItemBasedCFRecommender(user_history).fit()
 
-    # CF model
-    cf = ItemBasedCFRecommender(user_history).fit()
-    results["item_cf"] = evaluate_on_behaviors(cf, val_beh, max_rows=10000)
+    print("Evaluating Item-CF...")
 
-    print(results)
+    results = {
+        "item_cf": evaluate_on_behaviors(
+            model,
+            val_beh
+        )
+    }
+
+    print(json.dumps(results, indent=2))
 
     (OUT_DIR / "cf.json").write_text(
         json.dumps(results, indent=2),
         encoding="utf-8"
     )
-
 
 if __name__ == "__main__":
     main()

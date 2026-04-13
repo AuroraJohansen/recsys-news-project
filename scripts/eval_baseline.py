@@ -34,24 +34,31 @@ def main():
 
     results = {}
 
-    # Random
-    rnd = RandomRecommender().fit(train_beh)
-    results["random"] = evaluate_on_behaviors(rnd, val_beh, item_popularity=item_popularity, catalog_size=catalog_size)
+    models = {
+        "random": RandomRecommender().fit(train_beh),
+        "most_popular": MostPopularRecommender().fit(train_beh),
+    }
 
-    # Most popular
-    pop = MostPopularRecommender().fit(train_beh)
-    results["most_popular"] = evaluate_on_behaviors(pop, val_beh, item_popularity=item_popularity, catalog_size=catalog_size)
+    article_time = dict(zip(articles["article_id"], articles["published_time"]))
+    models["most_recent"] = MostRecentRecommender(article_time).fit()
 
-    # Most recent
-    time_col = "published_time"
-    article_time = dict(zip(articles["article_id"], articles[time_col]))
+    results = {}
 
-    rec = MostRecentRecommender(article_time).fit()
-    results["most_recent"] = evaluate_on_behaviors(rec, val_beh, item_popularity=item_popularity, catalog_size=catalog_size)
+    for name, model in models.items():
+        print(f"Evaluating {name}...")
+        results[name] = evaluate_on_behaviors(
+            model,
+            val_beh,
+            item_popularity=item_popularity,
+            catalog_size=catalog_size
+        )
 
-    print(results)
-    (OUT_DIR / "baselines.json").write_text(json.dumps(results, indent=2), encoding="utf-8")
+    print(json.dumps(results, indent=2))
 
+    (OUT_DIR / "baselines.json").write_text(
+        json.dumps(results, indent=2),
+        encoding="utf-8"
+    )
 
 if __name__ == "__main__":
     main()
