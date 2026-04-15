@@ -5,7 +5,7 @@ sys.path.append(str(Path(__file__).resolve().parents[1]))
 
 import json
 from src.data.load_data import load_articles, load_history, load_behaviors
-from models.content_based_tf_idf_2 import ( 
+from src.models.content_based_tf_idf_2 import ( 
     build_article_text,
     fit_vectorizer,
     build_article_id_to_index,
@@ -37,10 +37,19 @@ def main():
         article_id_to_idx
     )
 
+    #Popularity based on training history
+    all_clicked = history["article_id_fixed"].explode().dropna()
+    item_popularity = all_clicked.value_counts(normalize=True).to_dict()
+
+    #Number of unique articles in the catalog
+    catalog_size = len(article_id_to_idx)
+
     results = {}
     results["content_based"] = evaluate_on_behaviors(
         cbf,
         val_beh,
+        item_popularity=item_popularity,
+        catalog_size=catalog_size,
         max_rows=10000
     )
 
