@@ -38,5 +38,8 @@ class MostRecentRecommender:
     def fit(self, train_behaviors=None, articles=None):
         return self
 
+    def score_candidates(self, candidates, context=None):
+        return {a: float(self.article_time_map.get(a, -1).timestamp()) for a in candidates}
+
     def rank(self, candidates, context=None):
         return sorted(candidates, key=lambda a: self.article_time_map.get(a, -1), reverse=True)
