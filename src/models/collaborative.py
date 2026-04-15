@@ -10,7 +10,7 @@ class ItemBasedCFRecommender:
         self.co_counts = defaultdict(Counter)
 
     def fit(self):
-        for i, articles in enumerate(islice(self.user_history.values(), self.max_users_for_fit)):
+        for i, articles in enumerate(islice(self.user_history["article_ids_clicked"].values, self.max_users_for_fit)):
             articles = list(dict.fromkeys(articles))[:self.max_history]
 
             for a, b in combinations(articles, 2):
@@ -18,6 +18,33 @@ class ItemBasedCFRecommender:
                 self.co_counts[b][a] += 1
 
         return self
+    
+    def predict(self, user_id, candidate_item):
+        user_rows = self.user_history[self.user_history["user_id"] == user_id]
+
+        history = []
+        for arr in user_rows["article_ids_clicked"]:
+            if arr is not None and len(arr) > 0:
+                history.extend(arr)
+
+        if not history:
+            return 0.0
+
+        score = 0.0
+        for item in history:
+            if item == candidate_item:
+                continue
+            score += self.co_counts[item].get(candidate_item, 0)
+
+        return score
+
+
+    def score_candidates(self, candidates, context=None):
+        user_id = context.user_id
+        return {
+            a: float(self.predict(user_id, a))
+            for a in candidates
+        }
 
     def rank(self, candidates, context=None):
         user_id = getattr(context, "user_id", None)
